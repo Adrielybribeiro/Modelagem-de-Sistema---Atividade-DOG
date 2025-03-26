@@ -1,18 +1,19 @@
 let cachorros = [];
 
 function carregarFotosDeCachorros() {
-    let url = "https://dog.ceo/api/breeds/image/random/10";
-    
+    let url = "https://dog.ceo/api/breeds/image/random/8"; // Alterado para 8 imagens, compatível com a imagem fornecida.
+
     fetch(url)
         .then(response => response.json())
         .then(data => {
             cachorros = data.message;
             let gallery = document.getElementById("gallery");
             gallery.innerHTML = "";
-            
+
             cachorros.forEach(imageUrl => {
                 let imgElement = document.createElement("img");
                 imgElement.src = imageUrl;
+                imgElement.classList.add("dog-image");
                 gallery.appendChild(imgElement);
             });
 
@@ -23,10 +24,16 @@ function carregarFotosDeCachorros() {
 
 function iniciarTrocaAleatoria() {
     setInterval(() => {
-        if (cachorros.length > 0) {
-            let idAleatorio = Math.floor(Math.random() * cachorros.length);
-            let imagens = document.querySelectorAll(".gallery img");
-            imagens[idAleatorio].src = "https://dog.ceo/api/breeds/image/random";
+        let imagens = document.querySelectorAll("#gallery img");
+        if (imagens.length > 0) {
+            let idAleatorio = Math.floor(Math.random() * imagens.length);
+
+            fetch("https://dog.ceo/api/breeds/image/random")
+                .then(response => response.json())
+                .then(data => {
+                    imagens[idAleatorio].src = data.message; // Substitui apenas uma imagem na galeria
+                })
+                .catch(error => console.error("Erro ao trocar a imagem: ", error));
         }
     }, 3000);
 }
